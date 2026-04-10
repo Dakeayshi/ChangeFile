@@ -11,12 +11,15 @@ namespace ChangeFile
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter the folder path.");
+            string lastActionMessage = "Exited without changes.";
+
+            Console.WriteLine("Enter the folder path (example: C:\\Users\\Username\\Desktop)");
+            Console.Write("Folder path: ");
             string folderPath = (Console.ReadLine() ?? string.Empty).Trim().Trim('"'); // Trim quotes and whitespace for realistic scenario
 
             if (string.IsNullOrWhiteSpace(folderPath))
             {
-                Console.WriteLine("No folder path provided.");
+                Console.WriteLine("Please enter a valid folder path.");
                 Console.ReadKey();
                 return;
             }
@@ -29,7 +32,7 @@ namespace ChangeFile
                 return;
             }
 
-            Console.Write("List files recursively? (y/n): ");
+            Console.Write("List all the files in the folder? (y/n): ");
             string recursiveInput = (Console.ReadLine() ?? string.Empty).Trim();
             SearchOption searchOption = recursiveInput.Equals("y", StringComparison.OrdinalIgnoreCase)
                 ? SearchOption.AllDirectories
@@ -53,12 +56,12 @@ namespace ChangeFile
             }
 
             Console.WriteLine();
-            Console.Write("Choose a file number: ");
+            Console.Write("Please choose a file number: ");
             string selectionRaw = (Console.ReadLine() ?? string.Empty).Trim();
 
             if (!int.TryParse(selectionRaw, out int selection) || selection < 1 || selection > fileInfos.Length)
             {
-                Console.WriteLine("Invalid selection.");
+                Console.WriteLine("It is an invalid selection.");
                 Console.ReadKey();
                 return;
             }
@@ -111,6 +114,7 @@ namespace ChangeFile
                         File.Delete(filePath);
                         Console.WriteLine("Deleted:");
                         Console.WriteLine(filePath);
+                        lastActionMessage = "File deleted.";
                         break;
                     }
                     catch (Exception error)
@@ -168,6 +172,7 @@ namespace ChangeFile
                         filePath = destPath; // Update the file path
                         Console.WriteLine("Renamed to:");
                         Console.WriteLine(filePath);
+                        lastActionMessage = "File changed (renamed).";
                     }
                     catch (Exception error)
                     {
@@ -182,7 +187,7 @@ namespace ChangeFile
             }
 
             Console.WriteLine();
-            Console.WriteLine("Done. Press any key to exit.");
+            Console.WriteLine(lastActionMessage + " Press any key to exit.");
             Console.ReadKey();
         }
     }
